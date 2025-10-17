@@ -1,0 +1,27 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    - run: pip install -r requirements.txt
+    - name: Start mock (prism)
+      run: npx @stoplight/prism-cli mock specs/examples/openapi.yaml -p 4010 & sleep 2
+    - name: Generate payloads
+      run: python -m apps.cli.cli gen --spec specs/examples/openapi.yaml --endpoint /users --n 5 --base-url http://localhost:4010
+    - name: Run a single test run
+      run: python -m apps.cli.cli run --spec specs/examples/openapi.yaml --endpoint /users --method post --base-url http://localhost:4010
+    - name: Upload report
+      uses: actions/upload-artifact@v4
+      with:
+        name: report
+        path: reports/samples/report.html

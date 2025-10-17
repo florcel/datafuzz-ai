@@ -1,0 +1,18 @@
+# requirements.txt
+
+fastapi
+uvicorn
+typer[all]
+openapi-spec-validator
+pydantic
+httpx
+sqlalchemy
+jinja2
+pyyaml
+pytest
+psycopg2-binary
+pytest-asyncio
+numpy
+matplotlib
+scikit-learn
+sdv

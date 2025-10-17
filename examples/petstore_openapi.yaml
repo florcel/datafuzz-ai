@@ -1,0 +1,19 @@
+openapi: 3.0.3
+info: { title: Demo, version: '1.0.0' }
+paths:
+  /users:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, age]
+              properties:
+                email: { type: string }
+                age: { type: integer }
+                status: { type: string, enum: [active, archived, pending] }
+      responses:
+        '200': { description: OK }
+

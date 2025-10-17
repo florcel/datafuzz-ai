@@ -1,0 +1,49 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+
+  dashboard:
+    build:
+      context: ./apps/dashboard
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
+    depends_on:
+      - api
+
+  worker:
+    build:
+      context: ./apps/worker
+      dockerfile: Dockerfile
+    depends_on:
+      - api
+
+  postgres:
+    image: postgres:15
+    container_name: datafuzz-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: datafuzz
+      POSTGRES_PASSWORD: datafuzz
+      POSTGRES_DB: datafuzz
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./postgres-init.sql:/docker-entrypoint-initdb.d/postgres-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U datafuzz"]
+      interval: 5s
+      retries: 10
+      timeout: 5s
+
+volumes:
+  pgdata:
