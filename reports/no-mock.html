@@ -33,19 +33,19 @@
   <h1>Reporte — Datafuzz-ai</h1>
   <p class="sub">
     Endpoint probado: <strong>/users</strong>
-     · Run: <strong>normal-test</strong>
-     · Fecha: 2025-10-17 05:07
+     · Run: <strong>no-mock</strong>
+     · Fecha: 2025-10-17 07:55:46.386689
   </p>
 
   <section class="cards">
-    <div class="card"><div class="kpi">5 <small>requests</small></div><div class="muted">Total enviados</div></div>
+    <div class="card"><div class="kpi">10 <small>requests</small></div><div class="muted">Total enviados</div></div>
     <div class="card"><div class="kpi ok">0 <small>OK válidos</small></div><div class="muted">Respuestas correctas</div></div>
-    <div class="card"><div class="kpi ok">4 <small>OK esperados</small></div><div class="muted">Errores bien manejados</div></div>
+    <div class="card"><div class="kpi ok">0 <small>OK esperados</small></div><div class="muted">Errores bien manejados</div></div>
     <div class="card"><div class="kpi fail">0 <small>fallos</small></div><div class="muted">Aceptó datos inválidos</div></div>
-    <div class="card"><div class="kpi warn">2 <small>lentas</small></div><div class="muted">Respuestas > 900 ms</div></div>
+    <div class="card"><div class="kpi warn">0 <small>lentas</small></div><div class="muted">Respuestas > 900 ms</div></div>
     <div class="card"><div class="kpi">
         
-          820.4 ms <small>promedio</small>
+          N/A <small>promedio</small>
         
       </div><div class="muted">Latencia media</div></div>
   </section>
@@ -70,92 +70,187 @@
             <span class="pill valid">válido</span>
           
         </td>
-        <td>201</td>
+        <td>error</td>
         <td>
           
-            948 ms
+            -
           
         </td>
-        <td class="result-warn">
-          LENTO
+        <td class="result-fail">
+          FALLO
         </td>
-        <td></td>
+        <td>All connection attempts failed</td>
       </tr>
       
       <tr>
         <td>2</td>
         <td>
           
-            <span class="pill invalid">inválido</span>
+            <span class="pill valid">válido</span>
           
         </td>
-        <td>422</td>
+        <td>error</td>
         <td>
           
-            974 ms
+            -
           
         </td>
         <td class="result-fail">
-          OK (esperado)
+          FALLO
         </td>
-        <td>missing_required</td>
+        <td>All connection attempts failed</td>
       </tr>
       
       <tr>
         <td>3</td>
         <td>
           
-            <span class="pill invalid">inválido</span>
+            <span class="pill valid">válido</span>
           
         </td>
-        <td>422</td>
+        <td>error</td>
         <td>
           
-            728 ms
+            -
           
         </td>
         <td class="result-fail">
-          OK (esperado)
+          FALLO
         </td>
-        <td>invalid_enum</td>
+        <td>All connection attempts failed</td>
       </tr>
       
       <tr>
         <td>4</td>
         <td>
           
-            <span class="pill invalid">inválido</span>
+            <span class="pill valid">válido</span>
           
         </td>
-        <td>201</td>
+        <td>error</td>
         <td>
           
-            729 ms
+            -
           
         </td>
-        <td class="result-ok">
-          OK
+        <td class="result-fail">
+          FALLO
         </td>
-        <td>long_string</td>
+        <td>All connection attempts failed</td>
       </tr>
       
       <tr>
         <td>5</td>
         <td>
           
-            <span class="pill invalid">inválido</span>
+            <span class="pill valid">válido</span>
           
         </td>
-        <td>201</td>
+        <td>error</td>
         <td>
           
-            723 ms
+            -
           
         </td>
-        <td class="result-ok">
-          OK
+        <td class="result-fail">
+          FALLO
         </td>
-        <td>weird_unicode</td>
+        <td>All connection attempts failed</td>
+      </tr>
+      
+      <tr>
+        <td>6</td>
+        <td>
+          
+            <span class="pill valid">válido</span>
+          
+        </td>
+        <td>error</td>
+        <td>
+          
+            -
+          
+        </td>
+        <td class="result-fail">
+          FALLO
+        </td>
+        <td>All connection attempts failed</td>
+      </tr>
+      
+      <tr>
+        <td>7</td>
+        <td>
+          
+            <span class="pill valid">válido</span>
+          
+        </td>
+        <td>error</td>
+        <td>
+          
+            -
+          
+        </td>
+        <td class="result-fail">
+          FALLO
+        </td>
+        <td>All connection attempts failed</td>
+      </tr>
+      
+      <tr>
+        <td>8</td>
+        <td>
+          
+            <span class="pill valid">válido</span>
+          
+        </td>
+        <td>error</td>
+        <td>
+          
+            -
+          
+        </td>
+        <td class="result-fail">
+          FALLO
+        </td>
+        <td>All connection attempts failed</td>
+      </tr>
+      
+      <tr>
+        <td>9</td>
+        <td>
+          
+            <span class="pill valid">válido</span>
+          
+        </td>
+        <td>error</td>
+        <td>
+          
+            -
+          
+        </td>
+        <td class="result-fail">
+          FALLO
+        </td>
+        <td>All connection attempts failed</td>
+      </tr>
+      
+      <tr>
+        <td>10</td>
+        <td>
+          
+            <span class="pill valid">válido</span>
+          
+        </td>
+        <td>error</td>
+        <td>
+          
+            -
+          
+        </td>
+        <td class="result-fail">
+          FALLO
+        </td>
+        <td>All connection attempts failed</td>
       </tr>
       
     </tbody>

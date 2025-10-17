@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>{{ title or "Datafuzz-ai — Reporte" }}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { --ok:#2e7d32; --warn:#f9a825; --fail:#c62828; --muted:#607d8b; }
+  body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji"; margin: 24px; color:#111; }
+  h1 { margin: 0 0 4px 0; }
+  .sub { color:#555; margin:0 0 16px 0; }
+  .cards { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:12px; margin:20px 0; }
+  .card { border:1px solid #eee; border-radius:14px; padding:14px; box-shadow: 0 1px 3px rgba(0,0,0,.05); }
+  .kpi { font-size:28px; font-weight:700; }
+  .kpi small { font-weight:400; font-size:13px; color:#555; }
+  .ok { color: var(--ok); }
+  .fail { color: var(--fail); }
+  .warn { color: var(--warn); }
+  .muted { color: var(--muted); }
+  table { width:100%; border-collapse: collapse; background:white; }
+  th, td { padding:10px 8px; border-bottom:1px solid #f0f0f0; text-align:left; font-size:14px; }
+  th { position: sticky; top:0; background:#fafafa; z-index:1; }
+  .pill { display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px; border:1px solid #e7e7e7; }
+  .pill.valid { background:#e8f5e9; color:#1b5e20; border-color:#c8e6c9; }
+  .pill.invalid { background:#ffebee; color:#b71c1c; border-color:#ffcdd2; }
+  .result-ok { color:var(--ok); font-weight:700; }
+  .result-fail { color:var(--fail); font-weight:700; }
+  .result-warn { color:var(--warn); font-weight:700; }
+  .footer { margin-top:24px; color:#666; font-size:12px; }
+</style>
+</head>
+<body>
+  <h1>{{ header or "Reporte — Datafuzz-ai" }}</h1>
+  <p class="sub">
+    Endpoint probado: <strong>{{ endpoint or "-" }}</strong>
+    {% if run_name %} · Run: <strong>{{ run_name }}</strong>{% endif %}
+    {% if created_at %} · Fecha: {{ created_at }}{% endif %}
+  </p>
+
+  <section class="cards">
+    <div class="card"><div class="kpi">{{ totals.total }} <small>requests</small></div><div class="muted">Total enviados</div></div>
+    <div class="card"><div class="kpi ok">{{ totals.valid_ok }} <small>OK válidos</small></div><div class="muted">Respuestas correctas</div></div>
+    <div class="card"><div class="kpi ok">{{ totals.invalid_expected_ok }} <small>OK esperados</small></div><div class="muted">Errores bien manejados</div></div>
+    <div class="card"><div class="kpi fail">{{ totals.accepted_invalid }} <small>fallos</small></div><div class="muted">Aceptó datos inválidos</div></div>
+    <div class="card"><div class="kpi warn">{{ totals.slow }} <small>lentas</small></div><div class="muted">Respuestas > {{ thresholds.slow_ms }} ms</div></div>
+    <div class="card"><div class="kpi">
+        {% if totals.has_latency %}
+          {{ "%.1f"|format(totals.avg_latency_ms) }} ms <small>promedio</small>
+        {% else %}
+          N/A <small>promedio</small>
+        {% endif %}
+      </div><div class="muted">Latencia media</div></div>
+  </section>
+
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Tipo</th>
+        <th>Status</th>
+        <th>Latencia</th>
+        <th>Resultado</th>
+        <th>Nota</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td>{{ item.id }}</td>
+        <td>
+          {% if item.payload_type == "valid" %}
+            <span class="pill valid">válido</span>
+          {% else %}
+            <span class="pill invalid">inválido</span>
+          {% endif %}
+        </td>
+        <td>{{ item.status }}</td>
+        <td>
+          {% if item.latency_ms is none %}
+            -
+          {% else %}
+            {{ item.latency_ms }} ms
+          {% endif %}
+        </td>
+        <td class="{% if item.result == 'OK' %}result-ok{% elif item.result == 'LENTO' %}result-warn{% else %}result-fail{% endif %}">
+          {{ item.result }}
+        </td>
+        <td>{{ item.note }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% if footer_note %}
+    <p class="footer">{{ footer_note }}</p>
+  {% endif %}
+</body>
+</html>
