@@ -45,7 +45,7 @@ python -m apps.cli.cli run \
   --name "mi-test"
 ```
 
-**Ejecutar tests (async):**
+**Ejecutar tests (async, paralelo):**
 ```bash
 python -m apps.cli.cli run-parallel \
   --spec specs/examples/openapi.yaml \
@@ -54,7 +54,9 @@ python -m apps.cli.cli run-parallel \
   --concurrency 5
 ```
 
-## Con Postgres (opcional)
+## Persistencia
+
+Por defecto usa SQLite (`datafuzz.db`). Para Postgres:
 
 ```bash
 docker compose up -d postgres
@@ -64,89 +66,18 @@ python -c "from storage.db import init_db; init_db()"
 
 ## Stack
 
-- Python 3.10+
-- Typer (CLI)
-- httpx (requests)
-- SQLAlchemy (persistencia)
-- Jinja2 (reportes HTML)
-- Prism (mock server)
+- **Python 3.10+** con Typer, httpx, SQLAlchemy, Jinja2
+- **OpenAPI Spec Validator** para validar specs
+- **Prism** como mock server (opcional)
+- **PostgreSQL** para persistencia (opcional)
 
 ## TODO
 
-- [ ] Agregar más tipos de mutaciones
-- [ ] Soporte para auth (Bearer, API keys)
-- [ ] Dashboard web para ver runs históricos
-- [ ] Exportar reportes a JSON/CSV
+- [ ] Más tipos de mutaciones (format violations, boundary testing)
+- [ ] Autenticación (Bearer, API keys, OAuth)
+- [ ] Dashboard web para histórico de runs
+- [ ] Exportar a JSON/CSV
 
 ---
 
-Proyecto en fase alpha. Si encontrás bugs o querés sugerir features, abrí un issue.
-npx @stoplight/prism-cli mock specs/examples/openapi.yaml -p 4010
-```
-
----
-
-## Uso desde la CLI  
-
-Algunos ejemplos:  
-
-- **Generar payloads:**  
-```powershell
-python -m apps.cli.cli gen --spec specs/examples/openapi.yaml --endpoint /users --n 10 --base-url http://127.0.0.1:4010
-```
-
-- **Ejecutar una petición sincrónica y persistir resultado:**  
-```powershell
-python -m apps.cli.cli run --spec specs/examples/openapi.yaml --endpoint /users --method post --base-url http://127.0.0.1:4010 --name quick-test
-```
-
-- **Ejecutar requests concurrentes:**  
-```powershell
-python -m apps.cli.cli run-parallel --spec specs/examples/openapi.yaml --endpoint /users --method post --n 20 --concurrency 5 --base-url http://127.0.0.1:4010 --name parallel-test
-```
-
-- **Abrir reporte HTML:**  
-```powershell
-start reports/samples/report.html   # Windows
-```
-
----
-
-## Persistencia: SQLite y Postgres  
-
-- **Por defecto**: SQLite → `sqlite:///datafuzz.db`  
-- **Con Postgres (docker-compose)**:  
-```powershell
-docker compose up -d postgres
-$env:DATAFUZZ_DATABASE_URL = "postgresql://datafuzz:datafuzz@127.0.0.1:5432/datafuzz"
-python -c "from storage.db import init_db; init_db(); print('DB initialized')"
-```
-
----
-
-## CI con GitHub Actions  
-El workflow inicial:  
-- Instala Python y Node  
-- Levanta Prism  
-- Ejecuta `gen` y `run`  
-- Publica el reporte como artifact  
-
-*(Se puede ajustar para correr con Postgres o aplicar migraciones en CI).*  
-
----
-
-## Stack usado  
-- **Python**: Typer, httpx, SQLAlchemy, Jinja2, pyyaml, openapi-spec-validator, pytest  
-- **Node/npm**: @stoplight/prism-cli (mock server)  
-- **Infra**: Docker + Postgres (dev)  
-- **CI**: GitHub Actions  
-
----
-
-👉 Este proyecto todavía está en fase temprana (v0.1). Si te interesa probarlo, romperlo o sugerir mejoras, ¡todo feedback es bienvenido!
-
-##  📫 Contactame: <p align='center'>
-  <a href="https://www.linkedin.com/in/florenciaporcel/">
-    <img src="https://img.shields.io/badge/linkedin-%230077B5.svg?&style=for-the-badge&logo=linkedin&logoColor=white" />
-  </a>&nbsp;&nbsp;
-</p>
+**v0.1 alpha** — Feedback y PRs bienvenidas 🚀
