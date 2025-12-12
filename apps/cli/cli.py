@@ -24,6 +24,7 @@ def gen(
     n: int = typer.Option(10, "--n", help="Number of samples"),
     base_url: str = typer.Option("http://localhost:4010", "--base-url", help="Base URL for mock")
 ):
+    # TODO: agregar soporte para generar payloads para múltiples endpoints en paralelo
     init_db()
     spec_obj = core_parser.load_spec(spec)
     schema = core_parser.get_schema_for_path(spec_obj, endpoint, "post")
@@ -42,6 +43,7 @@ def run(
     base_url: str = typer.Option("http://localhost:4010", "--base-url", help="Base URL for mock"),
     run_name: str | None = typer.Option(None, "--name", "-n", help="Optional run name")
 ):
+    # FIXME: el manejo de errores de conexión necesita mejoras
     init_db()
     spec_obj = core_parser.load_spec(spec)
     schema = core_parser.get_schema_for_path(spec_obj, endpoint, method)
@@ -127,6 +129,7 @@ def run_parallel(
     retries: int = typer.Option(1, "--retries", help="Retries per request"),
     run_name: str | None = typer.Option(None, "--name", "-n", help="Optional run name")
 ):
+    # TODO: refactorizar esto, está medio repetitivo en algunos comandos
     init_db()
     spec_obj = core_parser.load_spec(spec)
     schema = core_parser.get_schema_for_path(spec_obj, endpoint, method)

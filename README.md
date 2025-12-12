@@ -1,82 +1,86 @@
-# Datafuzz-ai — v0.1
+# datafuzz-ai
 
-## Resumen  
-**Datafuzz-ai** nació como un experimento personal para automatizar pruebas rápidas a partir de especificaciones OpenAPI. La idea: generar payloads válidos e inválidos, correrlos contra un mock o servicio real, medir latencias/estatus y guardar los resultados para luego analizarlos en un reporte.  
+Herramienta para testear APIs automáticamente usando specs OpenAPI.
 
-Esta primera versión (v0.1) incluye:  
-- Parser OpenAPI básico (openapi-spec-validator + pyyaml).  
-- Generador de payloads (válidos + mutaciones inválidas como `enum` fuera de rango, `missing required`, strings largos, unicode, etc.).  
-- Runners HTTP: sincrónico y asíncrono (concurrency con httpx).  
-- Persistencia con SQLAlchemy (modelos `Run` / `Result`). Por defecto SQLite, opcional Postgres vía env var y `docker-compose`.  
-- Reporting: HTML (Jinja2) + JSON.  
-- CLI con Typer: `gen`, `run`, `run-parallel`, `report`.  
-- Tests unitarios y de integración con pytest + workflow inicial de GitHub Actions.  
+## Por qué esto existe
 
----
+Me cansé de probar endpoints manualmente, así que armé esto para:
+- Generar payloads válidos e inválidos desde un OpenAPI spec
+- Mandarlos contra un mock o API real
+- Ver qué rompe y qué anda
 
-## Estructura del repo  
-Algunos archivos relevantes:  
+## Setup rápido
 
-```
-apps/cli/cli.py               → CLI principal (Typer)
-apps/runner/http_runner.py    → runner sincrónico
-apps/runner/async_runner.py   → runner asíncrono (concurrency)
-core/parser.py                 → parser OpenAPI básico
-engines/contract/generator.py → generador de payloads y mutaciones
-storage/db.py                  → session maker (usa DATAFUZZ_DATABASE_URL)
-storage/models.py              → modelos SQLAlchemy: Run, Result
-apps/reporting/renderers/html.py → renderer con Jinja2
-specs/examples/openapi.yaml    → spec de ejemplo
-tests/unit/                    → tests unitarios y de persistencia/paralelo
-```
-
----
-
-## Requisitos previos  
-- Python 3.10+  
-- pip  
-- Node.js + npm (para `npx @stoplight/prism-cli` → mock server)  
-- Docker & docker-compose (opcional, para Postgres en dev)  
-- En Windows: PowerShell o WSL / Git Bash  
-
----
-
-## Instalación rápida  
-
-1. Clonar repo y entrar a la carpeta raíz:  
-```powershell
+```bash
+# 1. Clonar e instalar
 git clone <url>
 cd datafuzz-ai
-```
-
-2. Crear y activar entorno virtual:  
-```powershell
 python -m venv .venv
-. .venv\Scripts\Activate.ps1    # PowerShell
-# o en Linux/Mac:
-# source .venv/bin/activate
+source .venv/bin/activate  # en Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+
+# 2. Levantar mock para pruebas
+npx @stoplight/prism-cli mock specs/examples/openapi.yaml -p 4010
+
+# 3. Probar
+python -m apps.cli.cli gen --spec specs/examples/openapi.yaml --endpoint /users --n 10
 ```
 
-3. Instalar dependencias:  
-```powershell
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
+## Comandos útiles
+
+**Generar payloads:**
+```bash
+python -m apps.cli.cli gen \
+  --spec specs/examples/openapi.yaml \
+  --endpoint /users \
+  --n 10
 ```
 
-*(Si usás Postgres, `psycopg2-binary` ya viene en `requirements.txt`.)*  
+**Ejecutar tests (sync):**
+```bash
+python -m apps.cli.cli run \
+  --spec specs/examples/openapi.yaml \
+  --endpoint /users \
+  --method post \
+  --name "mi-test"
+```
+
+**Ejecutar tests (async):**
+```bash
+python -m apps.cli.cli run-parallel \
+  --spec specs/examples/openapi.yaml \
+  --endpoint /users \
+  --n 20 \
+  --concurrency 5
+```
+
+## Con Postgres (opcional)
+
+```bash
+docker compose up -d postgres
+export DATAFUZZ_DATABASE_URL="postgresql://datafuzz:datafuzz@127.0.0.1:5432/datafuzz"
+python -c "from storage.db import init_db; init_db()"
+```
+
+## Stack
+
+- Python 3.10+
+- Typer (CLI)
+- httpx (requests)
+- SQLAlchemy (persistencia)
+- Jinja2 (reportes HTML)
+- Prism (mock server)
+
+## TODO
+
+- [ ] Agregar más tipos de mutaciones
+- [ ] Soporte para auth (Bearer, API keys)
+- [ ] Dashboard web para ver runs históricos
+- [ ] Exportar reportes a JSON/CSV
 
 ---
 
-## Ejecutar tests  
-```powershell
-pytest -q
-```
-
----
-
-## Mock server con Prism  
-Para correr un mock local:  
-```powershell
+Proyecto en fase alpha. Si encontrás bugs o querés sugerir features, abrí un issue.
 npx @stoplight/prism-cli mock specs/examples/openapi.yaml -p 4010
 ```
 
