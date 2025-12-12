@@ -6,12 +6,12 @@ build-backend = "setuptools.build_meta"
 name = "datafuzz-ai"
 version = "0.1.0"
 description = "API testing tool using OpenAPI specs"
-authors = [{name = "Florencia Porcel", email = "tu@email.com"}]
+authors = [{name = "Florencia Porcel", email = "florencia@example.com"}]
 license = {text = "MIT"}
 requires-python = ">=3.10"
 
 dependencies = [
-    "typer[all]",
+    "typer",
     "httpx",
     "sqlalchemy",
     "jinja2",

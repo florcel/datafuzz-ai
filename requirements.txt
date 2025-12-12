@@ -1,18 +1,14 @@
-# requirements.txt
-
-fastapi
-uvicorn
-typer[all]
-openapi-spec-validator
-pydantic
+# Core dependencies
+typer
 httpx
 sqlalchemy
 jinja2
 pyyaml
-pytest
+openapi-spec-validator
+
+# Database
 psycopg2-binary
+
+# Testing
+pytest
 pytest-asyncio
-numpy
-matplotlib
-scikit-learn
-sdv
